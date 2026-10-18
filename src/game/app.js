@@ -90,7 +90,7 @@
     const extra = (opts.sel ? ' sel' : '') + (opts.fixed ? ' fixed' : '') + (opts.vert ? ' vert' : '') + (opts.eaten ? ' eaten' : '');
     const tag = opts.eaten ? '<span class="eaten-tag">Eaten</span>' : '';
     const hab = tile.kind === 'habitat';
-    const cls = hab ? ({ water: 'water', billabong: 'water', hedge: 'hedge' }[tile.h] || 'hab') : famClass(tile);
+    const cls = hab ? ({ water: 'water', billabong: 'water', waterfall: 'water', hedge: 'hedge', sawgrass: 'grass' }[tile.h] || 'hab') : famClass(tile);
     const badge = hab && tile.eff ? `<span class="hab-tag">${tile.eff.t === 'mult' ? '×' + tile.eff.v : '+' + tile.eff.v}</span>` : '';
     const lat = !hab && f.latin ? `<span class="lat">${esc(latinShort(f.latin))}</span>` : '';
     const art = (window.ZART.ART[hab ? tile.h : tile.a] || '');

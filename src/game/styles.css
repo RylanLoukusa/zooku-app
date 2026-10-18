@@ -43,6 +43,14 @@ body[data-scene="pond"] { background: radial-gradient(120% 34% at 50% 100%, rgba
 body[data-scene="jungle"] { background: radial-gradient(120% 34% at 50% 100%, rgba(95, 138, 82, 0.26), rgba(95, 138, 82, 0) 70%), var(--paper); }
 body[data-scene="outback"] { background: radial-gradient(120% 34% at 50% 100%, rgba(200, 105, 63, 0.24), rgba(200, 105, 63, 0) 70%), var(--paper); }
 body[data-scene="meadow"] { background: radial-gradient(120% 34% at 50% 100%, rgba(140, 170, 100, 0.26), rgba(140, 170, 100, 0) 70%), var(--paper); }
+body[data-scene="desert"] { background: radial-gradient(120% 34% at 50% 100%, rgba(226, 160, 100, 0.24), rgba(226, 160, 100, 0) 70%), var(--paper); }
+body[data-scene="tundra"] { background: radial-gradient(120% 34% at 50% 100%, rgba(150, 180, 200, 0.24), rgba(150, 180, 200, 0) 70%), var(--paper); }
+body[data-scene="kelp"] { background: radial-gradient(120% 34% at 50% 100%, rgba(63, 127, 122, 0.24), rgba(63, 127, 122, 0) 70%), var(--paper); }
+body[data-scene="mountain"] { background: radial-gradient(120% 34% at 50% 100%, rgba(140, 150, 168, 0.24), rgba(140, 150, 168, 0) 70%), var(--paper); }
+body[data-scene="swamp"] { background: radial-gradient(120% 34% at 50% 100%, rgba(127, 165, 160, 0.24), rgba(127, 165, 160, 0) 70%), var(--paper); }
+body[data-scene="porch"] { background: radial-gradient(120% 34% at 50% 100%, rgba(138, 122, 168, 0.24), rgba(138, 122, 168, 0) 70%), var(--paper); }
+body[data-scene="india"] { background: radial-gradient(120% 34% at 50% 100%, rgba(169, 163, 95, 0.24), rgba(169, 163, 95, 0) 70%), var(--paper); }
+body[data-scene="river"] { background: radial-gradient(120% 34% at 50% 100%, rgba(127, 176, 189, 0.24), rgba(127, 176, 189, 0) 70%), var(--paper); }
 button { font: inherit; color: inherit; cursor: pointer; }
 button:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
 .vignette { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(85% 70% at 50% 42%, rgba(176, 138, 82, 0) 60%, rgba(176, 138, 82, 0.18) 100%); }
@@ -102,6 +110,14 @@ body[data-scene="pond"] .cell { background: radial-gradient(ellipse at 50% 55%, 
 body[data-scene="jungle"] .cell { background: radial-gradient(ellipse at 50% 55%, rgba(126, 168, 98, 0.34) 0%, rgba(126, 168, 98, 0.13) 72%, rgba(126, 168, 98, 0.05) 100%); }
 body[data-scene="outback"] .cell { background: radial-gradient(ellipse at 50% 55%, rgba(214, 128, 82, 0.36) 0%, rgba(214, 128, 82, 0.14) 72%, rgba(214, 128, 82, 0.05) 100%); }
 body[data-scene="meadow"] .cell { background: radial-gradient(ellipse at 50% 55%, rgba(169, 192, 138, 0.38) 0%, rgba(169, 192, 138, 0.14) 72%, rgba(169, 192, 138, 0.05) 100%); }
+body[data-scene="desert"] .cell { background: radial-gradient(ellipse at 50% 55%, rgba(226, 185, 129, 0.38) 0%, rgba(226, 185, 129, 0.14) 72%, rgba(226, 185, 129, 0.05) 100%); }
+body[data-scene="tundra"] .cell { background: radial-gradient(ellipse at 50% 55%, rgba(214, 226, 234, 0.38) 0%, rgba(214, 226, 234, 0.14) 72%, rgba(214, 226, 234, 0.05) 100%); }
+body[data-scene="kelp"] .cell { background: radial-gradient(ellipse at 50% 55%, rgba(156, 138, 94, 0.38) 0%, rgba(156, 138, 94, 0.14) 72%, rgba(156, 138, 94, 0.05) 100%); }
+body[data-scene="mountain"] .cell { background: radial-gradient(ellipse at 50% 55%, rgba(190, 196, 170, 0.38) 0%, rgba(190, 196, 170, 0.14) 72%, rgba(190, 196, 170, 0.05) 100%); }
+body[data-scene="swamp"] .cell { background: radial-gradient(ellipse at 50% 55%, rgba(201, 185, 100, 0.38) 0%, rgba(201, 185, 100, 0.14) 72%, rgba(201, 185, 100, 0.05) 100%); }
+body[data-scene="porch"] .cell { background: radial-gradient(ellipse at 50% 55%, rgba(150, 170, 120, 0.38) 0%, rgba(150, 170, 120, 0.14) 72%, rgba(150, 170, 120, 0.05) 100%); }
+body[data-scene="india"] .cell { background: radial-gradient(ellipse at 50% 55%, rgba(214, 190, 130, 0.38) 0%, rgba(214, 190, 130, 0.14) 72%, rgba(214, 190, 130, 0.05) 100%); }
+body[data-scene="river"] .cell { background: radial-gradient(ellipse at 50% 55%, rgba(170, 196, 176, 0.38) 0%, rgba(170, 196, 176, 0.14) 72%, rgba(170, 196, 176, 0.05) 100%); }
 .cell.rock { cursor: default; }
 .cell.rock svg { width: 62%; height: 62%; }
 .cell.target::before { content: ''; position: absolute; inset: 5px; border: 1.5px dashed rgba(47, 58, 44, 0.5); border-radius: 4px; pointer-events: none; }
@@ -141,6 +157,9 @@ body[data-scene="meadow"] .cell { background: radial-gradient(ellipse at 50% 55%
 .tile.hedge .art { width: 84%; max-height: 70%; }
 .tile.hedge .hab-tag { left: 50%; right: auto; top: -10px; transform: translateX(-50%); }
 .tile.hedge .nm { color: #f8f0dc; }
+.tile.grass { background: radial-gradient(ellipse at 50% 40%, rgba(214, 205, 120, 0.55), rgba(170, 160, 82, 0.85)); border-width: 1.4px; border-radius: 14px; box-shadow: none; }
+.tile.grass .art { width: 84%; max-height: 70%; }
+.tile.grass .hab-tag { left: 50%; right: auto; top: -10px; transform: translateX(-50%); }
 .border-piece.horiz .tile { flex-direction: row; gap: 6px; }
 .border-piece.horiz .tile .art { width: auto; height: 70%; max-height: 70%; flex: none; }
 .tile.vert .nm { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 14px; max-height: none; margin-top: 6px; }

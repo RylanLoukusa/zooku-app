@@ -7,7 +7,8 @@
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const THEME_NAME = { reef: 'Reef', savanna: 'Savanna', night: 'Night field', ice: 'Antarctic', pond: 'Pond', jungle: 'Rainforest', outback: 'Outback', meadow: 'Hedgerow' };
+  const THEME_NAME = { reef: 'Reef', savanna: 'Savanna', night: 'Night field', ice: 'Antarctic', pond: 'Pond', jungle: 'Rainforest', outback: 'Outback', meadow: 'Hedgerow',
+    desert: 'Desert', tundra: 'Tundra', kelp: 'Kelp forest', mountain: 'Himalaya', swamp: 'Swamp', porch: 'Summer porch', india: 'Indian forest', river: 'Salmon river' };
   const fmt = iso => { const d = new Date(iso + 'T12:00:00Z'); return `${DOW[d.getUTCDay()]} ${d.getUTCDate()} ${MON[d.getUTCMonth()]}`; };
   const num = n => n.toLocaleString('en-US');
 
@@ -35,7 +36,7 @@
       const span = b.to - b.from + 1, vertical = b.side === 'left' || b.side === 'right';
       const col = vertical ? (b.side === 'left' ? 1 : 4 + co) : `${b.from + 1 + co} / ${b.to + 2 + co}`;
       const row = vertical ? `${b.from + 1 + ro} / ${b.to + 2 + ro}` : (b.side === 'top' ? 1 : 4 + ro);
-      const cls = b.tile.h === 'hedge' ? 'hedge' : 'water';
+      const cls = { hedge: 'hedge', sawgrass: 'grass' }[b.tile.h] || 'water';
       h += `<div class="bp ${cls}" style="grid-column:${col};grid-row:${row};${vertical ? '' : `aspect-ratio:${(span / 0.55).toFixed(2)};`}" title="${esc(info(b.tile).name)}">${art(b.tile.h)}</div>`;
     });
     for (let cell = 0; cell < 9; cell++) {

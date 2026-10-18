@@ -60,6 +60,54 @@
       prey: [{ a: 'sparrow', dup: true, rules: ['school', 'herd'] }, { a: 'robin', rules: ['loner'] },
              { a: 'bluetit', rules: ['nearHab'] }, { a: 'wren', rules: ['corner', 'edge'] }],
       habitat: { h: 'hedge', where: 'border', sides: ['right', 'left'] } },
+    desert: { scene: 'desert', groups: { prey: 'Lizards', preyOne: 'Lizard', pred: 'Roadrunner' },
+      titles: ['Desert Noon', 'Sunbaked', 'Saguaro Shade', 'Dry Wash'],
+      pred: { a: 'roadrunner', reach: 'next' },
+      prey: [{ a: 'whiptail', dup: true, rules: ['school', 'herd'] }, { a: 'hornedlizard', rules: ['corner', 'loner'] },
+             { a: 'chuckwalla', rules: ['nearHab', 'edge'] }, { a: 'collared', rules: ['flat', 'center', 'loner'] }],
+      habitat: { h: 'saguaro', where: 'grid' } },
+    tundra: { scene: 'tundra', groups: { prey: 'Burrowers', preyOne: 'Burrower', pred: 'Arctic Fox' },
+      titles: ['Polar Night', 'Tundra', 'Snowfield', 'Northern Lights'],
+      pred: { a: 'arcticfox', reach: 'next' },
+      prey: [{ a: 'lemming', dup: true, rules: ['school', 'herd'] }, { a: 'arctichare', rules: ['loner', 'edge'] },
+             { a: 'groundsquirrel', rules: ['nearHab', 'corner'] }, { a: 'tundravole', rules: ['flat', 'nearHab'] }],
+      habitat: { h: 'snowdrift', where: 'grid' } },
+    kelp: { scene: 'kelp', groups: { prey: 'Invertebrates', preyOne: 'Invertebrate', pred: 'Sea Otter' },
+      titles: ['Kelp Forest', 'Otter Cove', 'Tide Line', 'Green Water'],
+      pred: { a: 'otter', reach: 'next' },
+      prey: [{ a: 'urchin', dup: true, rules: ['school', 'herd'] }, { a: 'crab', rules: ['corner', 'loner'] },
+             { a: 'abalone', rules: ['nearHab', 'edge'] }, { a: 'mussel', rules: ['flat', 'school'] }],
+      habitat: { h: 'kelp', where: 'grid' } },
+    mountain: { scene: 'mountain', groups: { prey: 'Wild Goats', preyOne: 'Wild Goat', pred: 'Snow Leopard' },
+      titles: ['High Pass', 'Snowline', 'Cliff Face', 'Roof of the World'],
+      pred: { a: 'snowleopard', reach: 'next' },
+      prey: [{ a: 'bharal', dup: true, rules: ['herd', 'school'] }, { a: 'tahr', rules: ['edge', 'loner'] },
+             { a: 'markhor', rules: ['nearHab', 'corner'] }, { a: 'ibex', rules: ['corner', 'center'] }],
+      habitat: { h: 'alpine', where: 'grid' } },
+    swamp: { scene: 'swamp', groups: { prey: 'Waterbirds', preyOne: 'Waterbird', pred: 'Alligator' },
+      titles: ['Everglades', 'Gator Hole', 'Cypress Swamp', 'River of Grass'],
+      pred: { a: 'gator', reach: 'next' },
+      prey: [{ a: 'ibis', dup: true, rules: ['school', 'herd'] }, { a: 'spoonbill', rules: ['nearHab', 'loner'] },
+             { a: 'egret', rules: ['edge', 'loner'] }, { a: 'woodduck', rules: ['flat', 'corner'] }],
+      habitat: { h: 'sawgrass', where: 'border', sides: ['left', 'right'] } },
+    porch: { scene: 'porch', groups: { prey: 'Moths', preyOne: 'Moth', pred: 'Bat' },
+      titles: ['Porch Light', 'Summer Night', 'Moth Hour', 'Dusk Flight'],
+      pred: { a: 'bat', reach: 'around' },
+      prey: [{ a: 'luna', dup: true, rules: ['school', 'herd'] }, { a: 'rosymaple', rules: ['nearHab', 'corner'] },
+             { a: 'polyphemus', rules: ['loner', 'edge'] }, { a: 'tigermoth', rules: ['nearHab', 'center'] }],
+      habitat: { h: 'porchlight', where: 'grid' } },
+    india: { scene: 'india', groups: { prey: 'Deer', preyOne: 'Deer', pred: 'Tiger' },
+      titles: ['Tiger Country', 'Sal Forest', 'Bamboo Shade', 'Jungle Dawn'],
+      pred: { a: 'tiger', reach: 'next' },
+      prey: [{ a: 'chital', dup: true, rules: ['herd', 'school'] }, { a: 'sambar', rules: ['flat', 'loner'] },
+             { a: 'barasingha', rules: ['nearHab', 'edge'] }, { a: 'muntjac', rules: ['corner', 'loner'] }],
+      habitat: { h: 'bamboo', where: 'grid' } },
+    river: { scene: 'river', groups: { prey: 'Salmon', preyOne: 'Salmon', pred: 'Grizzly' },
+      titles: ['Salmon Run', 'The Falls', 'Upstream', 'Spawning Run'],
+      pred: { a: 'grizzly', reach: 'next' },
+      prey: [{ a: 'sockeye', dup: true, rules: ['school', 'herd'] }, { a: 'chinook', rules: ['nearHab', 'edge'] },
+             { a: 'coho', rules: ['corner', 'loner'] }, { a: 'pink', rules: ['flat', 'center'] }],
+      habitat: { h: 'waterfall', where: 'border', sides: ['top'] } },
   };
   const THEME_KEYS = Object.keys(THEMES);
 
@@ -184,18 +232,28 @@
   const DAY_TIER = ['Hard', 'Easy', 'Easy', 'Medium', 'Medium', 'Medium', 'Hard'];   // Sun..Sat: easier early week, harder weekend
   const addDays = (iso, n) => { const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
   const weekday = iso => new Date(iso + 'T12:00:00Z').getUTCDay();
-  // Theme order: each run of 8 days uses every theme once, shuffled, never the same theme two days running.
-  function themeOrder(startDate, days, lastTheme) {
-    const r = rng('themes|' + startDate); const out = []; let prev = lastTheme;
-    while (out.length < days) {
-      let cycle = r.shuffle(THEME_KEYS);
-      if (cycle[0] === prev) cycle.push(cycle.shift());
-      out.push(...cycle); prev = cycle[cycle.length - 1];
+  // Theme order. Each theme (and so each animal and habitat, which belong to one theme) appears at most
+  // MONTHLY_CAP times per calendar month, and never within MIN_GAP days of its last use if that can be avoided.
+  // Among the allowed themes, the one used longest ago goes next (ties broken by the seeded shuffle).
+  const MONTHLY_CAP = 2, MIN_GAP = 7;
+  function themeOrder(startDate, days, previous = []) {
+    const r = rng('themes|' + startDate);
+    const used = previous.filter(p => p.theme).map(p => ({ date: p.date, theme: p.theme }));
+    const out = [];
+    for (let i = 0; i < days; i++) {
+      const date = addDays(startDate, i), month = date.slice(0, 7), all = used.concat(out);
+      const inMonth = t => all.filter(u => u.theme === t && u.date.slice(0, 7) === month).length;
+      const since = t => { const d = all.filter(u => u.theme === t).map(u => u.date).sort().pop(); return d ? (new Date(date) - new Date(d)) / 864e5 : Infinity; };
+      let pool = THEME_KEYS.filter(t => inMonth(t) < MONTHLY_CAP);
+      const spaced = pool.filter(t => since(t) >= MIN_GAP);
+      if (spaced.length) pool = spaced;
+      const theme = r.shuffle(pool).sort((a, b) => since(b) - since(a))[0];
+      out.push({ date, theme });
     }
-    return out.slice(0, days);
+    return out.map(o => o.theme);
   }
-  function buildSchedule({ startDate, days, startNo, lastTheme = null, previous = [], onDay = null }) {
-    const themes = themeOrder(startDate, days, lastTheme);
+  function buildSchedule({ startDate, days, startNo, previous = [], onDay = null }) {
+    const themes = themeOrder(startDate, days, previous);
     const avoid = new Set(previous.map(signature));
     const out = [];
     for (let i = 0; i < days; i++) {
@@ -214,7 +272,7 @@
     return out;
   }
 
-  const ZGEN = { THEMES, THEME_KEYS, TIERS, DAY_TIER, rng, candidate, viable, analyze, makeDay, buildSchedule, signature, addDays, weekday };
+  const ZGEN = { THEMES, THEME_KEYS, TIERS, DAY_TIER, MONTHLY_CAP, MIN_GAP, themeOrder, rng, candidate, viable, analyze, makeDay, buildSchedule, signature, addDays, weekday };
   if (typeof module !== 'undefined') module.exports = ZGEN;
   if (typeof window !== 'undefined') window.ZGEN = ZGEN;
 })(typeof window !== 'undefined' ? window : globalThis);

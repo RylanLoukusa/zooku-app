@@ -45,7 +45,7 @@ async function api(req, res, url) {
   if (url === '/api/generate') {
     const n = Math.min(Math.max(Number(body.days) || 30, 1), 120);
     const last = days[days.length - 1];
-    const fresh = G.buildSchedule({ startDate: addDays(last.date, 1), days: n, startNo: last.no + 1, lastTheme: last.theme, previous: days }).map(p => ({ ...stripTries(p), review: null }));
+    const fresh = G.buildSchedule({ startDate: addDays(last.date, 1), days: n, startNo: last.no + 1, previous: days }).map(p => ({ ...stripTries(p), review: null }));
     const all = days.concat(fresh); calendar.write(all);
     console.log(`Generated ${fresh.length} days through ${fresh[fresh.length - 1].date}`);
     return send(res, 200, { added: fresh.length, days: all });

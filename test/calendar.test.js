@@ -50,3 +50,14 @@ test('no two days are the same puzzle', () => {
     seen.add(sig);
   }
 });
+
+test('no theme, animal or habitat appears on more than two days in a calendar month', () => {
+  const count = {};
+  for (const d of days) {
+    const month = d.date.slice(0, 7);
+    const things = new Set([`theme ${d.theme}`, ...d.hand.map(t => `animal ${t.a}`),
+      ...d.fixed.map(f => `habitat ${f.tile.h}`), ...d.border.map(b => `habitat ${b.tile.h}`)]);
+    for (const t of things) count[`${month} ${t}`] = (count[`${month} ${t}`] || 0) + 1;
+  }
+  assert.deepEqual(Object.entries(count).filter(([, n]) => n > 2), []);
+});

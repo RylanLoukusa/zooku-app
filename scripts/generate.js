@@ -15,7 +15,7 @@ const start = addDays(last.date, 1);
 const t0 = Date.now();
 console.log(`Generating ${count} days from ${start}…`);
 const fresh = G.buildSchedule({
-  startDate: start, days: count, startNo: last.no + 1, lastTheme: last.theme, previous: days,
+  startDate: start, days: count, startNo: last.no + 1, previous: days,
   onDay: p => console.log(`  ${p.date}  #${p.no}  ${p.title.padEnd(16)} ${p.meta.difficulty.padEnd(6)} ${p.meta.winner === 'feed' ? 'feed wins   ' : 'protect wins'}  perfect ${p.meta.perfect}`),
 });
 fresh.forEach(p => { delete p.meta.tries; p.review = null; });
