@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<defs><linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a7bf96"/><stop offset=".55" stop-color="#c3d0b0"/><stop offset="1" stop-color="#e3e4cc"/></linearGradient></defs>
+<g transform="rotate(-6 32 34)">
+<rect x="9.5" y="8.5" width="45" height="51" rx="4" fill="#fbf6ea"/>
+<rect x="9.5" y="8.5" width="45" height="51" rx="4" fill="url(#w)"/>
+<rect x="9.5" y="8.5" width="45" height="51" rx="4" fill="none" stroke="#2f3a2c" stroke-width="3.2"/>
+<path transform="translate(14.21 56.77) scale(0.062 -0.062)" d="M469 -2Q399 -1 319.5 -0.5Q240 0 160.5 0.0Q81 0 12 0Q8 0 7.0 4.5Q6 9 8 13L475 600Q480 605 479.5 606.5Q479 608 473 608Q400 608 349.0 605.0Q298 602 262.5 594.0Q227 586 201.5 571.5Q176 557 155.5 533.5Q135 510 114 475Q112 472 107.0 473.5Q102 475 104 479L174 655Q175 657 181.0 655.5Q187 654 185 651Q180 634 188.0 629.5Q196 625 230 625Q288 625 370.0 625.0Q452 625 577 625Q582 625 583.0 620.0Q584 615 582 612L120 27Q116 22 116.5 20.5Q117 19 122 19Q168 19 204.0 19.0Q240 19 262 19Q322 19 365.5 31.0Q409 43 442.5 71.0Q476 99 504 148Q506 152 511.5 150.5Q517 149 516 146L478 8Q478 5 475.0 1.5Q472 -2 469 -2Z" fill="#2f3a2c" stroke="#2f3a2c" stroke-width="24" stroke-linejoin="round"/>
+</g>
+<circle cx="30" cy="9.5" r="5.4" fill="#b5593a" stroke="#2f3a2c" stroke-width="2.2"/>
+<circle cx="28.4" cy="8" r="1.4" fill="#e9a184"/>
+</svg>

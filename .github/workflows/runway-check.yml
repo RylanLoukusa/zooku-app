@@ -1,0 +1,47 @@
+# Opens a GitHub issue (which emails you) when fewer than 7 upcoming days are approved,
+# or when the calendar itself is about to run out. Closes it again once you're ahead.
+name: Approved-days reminder
+
+on:
+  schedule:
+    - cron: '0 15 * * *'   # every day, around 10–11am ET
+  push:
+    branches: [main]
+    paths: [data/calendar.json]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check the runway
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/runway.js --json > runway.json
+          approved=$(node -p "require('./runway.json').approvedAhead")
+          scheduled=$(node -p "require('./runway.json').scheduledAhead")
+          node scripts/runway.js
+          title="Approve more Zooku days"
+          open=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty')
+          if [ "$approved" -lt 7 ] || [ "$scheduled" -lt 14 ]; then
+            body="Only **$approved** upcoming days are approved and **$scheduled** are scheduled.
+
+          1. Run \`npm run workshop\` and open http://localhost:5174
+          2. If fewer than 14 days are scheduled, click **Generate 30 more days**
+          3. Approve or regenerate the upcoming days
+          4. Commit and push \`data/calendar.json\`
+
+          Unapproved days still go out on their date, so the game never goes blank; this is your chance to review them first."
+            if [ -z "$open" ]; then gh issue create --title "$title" --body "$body"; else echo "Reminder issue #$open is already open."; fi
+          elif [ -n "$open" ]; then
+            gh issue close "$open" --comment "Approved $approved days ahead. Thanks!"
+          fi

@@ -1,0 +1,28 @@
+# Releases tomorrow's puzzle every evening, before midnight in New York.
+# It asks Cloudflare Pages to rebuild the site; after 8pm ET the build includes tomorrow, and the game
+# keeps it hidden until midnight ET. Two runs in case one is delayed or fails.
+#
+# Setup (once): Cloudflare Pages → your project → Settings → Builds → Deploy hooks → add one for "main",
+# then save its URL here as the repository secret CLOUDFLARE_DEPLOY_HOOK (Settings → Secrets and variables → Actions).
+name: Nightly publish
+
+on:
+  schedule:
+    - cron: '30 1 * * *'   # 9:30pm EDT / 8:30pm EST
+    - cron: '30 2 * * *'   # 10:30pm EDT / 9:30pm EST (backup)
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask Cloudflare Pages to rebuild zooku.app
+        env:
+          HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::error::The CLOUDFLARE_DEPLOY_HOOK secret is not set, so tomorrow's puzzle was not released. See README → Going live."
+            exit 1
+          fi
+          curl --fail --silent --show-error --retry 3 -X POST "$HOOK"
+          echo "Rebuild requested."
