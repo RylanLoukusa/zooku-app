@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Serves dist/ on http://localhost:5173 with the same headers Cloudflare Pages will send (public/_headers).
+// Serves dist/ on http://localhost:5173 with the same headers Cloudflare will send (public/_headers).
 const http = require('http');
 const fs = require('fs');
 const path = require('path');

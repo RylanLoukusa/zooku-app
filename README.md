@@ -26,7 +26,7 @@ scripts/
 test/            calendar and build checks (npm test)
 .github/workflows/
   test.yml             runs the tests on every push
-  nightly-publish.yml  releases tomorrow's puzzle every evening
+  nightly-publish.yml  deploys the site every evening (releasing tomorrow's puzzle) and on every push to main
   runway-check.yml     emails you (via a GitHub issue) when approved days run low
 ```
 
@@ -47,7 +47,7 @@ Needs Node 20 or newer. There is nothing to install.
 
 - `data/calendar.json` holds every day, including the answer and the generator's notes. It never goes on the website.
 - The build ships only the days players may see: everything up to today in New York, plus tomorrow once it is 8pm there. Answers, stats and review notes are stripped out.
-- Every evening, the **Nightly publish** workflow asks Cloudflare Pages to rebuild, so tomorrow's puzzle is online before midnight. The game keeps it hidden until midnight Eastern. Any push to `main` also rebuilds the site.
+- Every evening, the **Nightly publish** workflow builds and deploys the site, so tomorrow's puzzle is online before midnight. The game keeps it hidden until midnight Eastern. Any push to `main` also deploys the site.
 - There are 16 themes, each with its own animals and habitat. The generator uses each theme at most twice per calendar month, about two weeks apart, so no animal or habitat shows up more than twice a month (`npm test` checks this).
 - Unapproved days still go out on their date, so the game never goes blank. Approval is your review step, and the reminder makes sure you get to it.
 - Never change a day once it is live: players may already have played it. The workshop locks those days.
@@ -66,14 +66,15 @@ Needs Node 20 or newer. There is nothing to install.
 
 When fewer than 7 upcoming days are approved, or fewer than 14 are scheduled, the **Approved-days reminder** opens a GitHub issue, which GitHub emails to you. It closes itself once you're ahead again.
 
-## Going live on Cloudflare Pages (one-time setup)
+## Going live on Cloudflare (one-time setup)
 
-1. **Connect the repo.** In the Cloudflare dashboard, open **Workers & Pages → Create → Pages → Connect to Git** and choose `RylanLoukusa/zooku-app`.
-2. **Build settings.** Production branch `main`, framework preset **None**, build command `npm run build`, build output directory `dist`. (`.node-version` asks for Node 22.)
-3. **Deploy**, then open the project's **Custom domains** tab and add `zooku.app`. Since the domain is already on Cloudflare, it sets up DNS and HTTPS for you. Optionally add `www.zooku.app` too.
-4. **Nightly release hook.** In the project, go to **Settings → Builds → Deploy hooks**, add a hook for branch `main` and copy its URL.
-5. **Give it to GitHub.** In this repo on GitHub, go to **Settings → Secrets and variables → Actions → New repository secret**, name it `CLOUDFLARE_DEPLOY_HOOK` and paste the URL.
-6. **Test it.** On GitHub, open **Actions → Nightly publish → Run workflow**. Cloudflare should show a new deployment a minute later.
+zooku.app is a Cloudflare Worker named `zooku-app` that serves the files in `dist/` (see `wrangler.jsonc`). GitHub deploys it with an API token:
+
+1. **Create a token.** In the Cloudflare dashboard, open **My Profile → API Tokens → Create Token**, use the **Edit Cloudflare Workers** template, pick your account and zone, and create it.
+2. **Give it to GitHub.** In this repo on GitHub, go to **Settings → Secrets and variables → Actions → New repository secret**, name it `CLOUDFLARE_API_TOKEN` and paste the token. If the token can see more than one Cloudflare account, also add `CLOUDFLARE_ACCOUNT_ID` (shown on the Workers & Pages overview).
+3. **Test it.** On GitHub, open **Actions → Nightly publish → Run workflow**. A new version of `zooku-app` should show up in Cloudflare a minute later.
+
+To deploy by hand instead, after `npx wrangler login`: run `npm run build && npx wrangler versions upload`, then `npx wrangler versions deploy <version-id>@100%` with the ID it prints. Upload-then-deploy only replaces the site files; a plain `wrangler deploy` would also reapply Worker settings such as routes from `wrangler.jsonc`, which doesn't list them.
 
 Dashboard labels move around occasionally; the settings themselves stay the same.
 
