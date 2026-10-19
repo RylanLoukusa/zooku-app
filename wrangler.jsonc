@@ -1,0 +1,7 @@
+// zooku.app is a Cloudflare Worker that only serves the static files in dist/ (npm run build).
+// The publish workflow deploys it with wrangler versions upload + versions deploy (README → Going live).
+{
+  "name": "zooku-app",
+  "compatibility_date": "2026-10-18",
+  "assets": { "directory": "./dist" }
+}

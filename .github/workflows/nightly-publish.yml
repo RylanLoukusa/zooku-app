@@ -1,28 +1,48 @@
-# Releases tomorrow's puzzle every evening, before midnight in New York.
-# It asks Cloudflare Pages to rebuild the site; after 8pm ET the build includes tomorrow, and the game
-# keeps it hidden until midnight ET. Two runs in case one is delayed or fails.
+# Deploys zooku.app (a Cloudflare Worker serving dist/) every evening before midnight in New York, and on
+# every push to main. After 8pm ET the build includes tomorrow, and the game keeps it hidden until midnight ET.
+# Two evening runs in case one is delayed or fails.
 #
-# Setup (once): Cloudflare Pages → your project → Settings → Builds → Deploy hooks → add one for "main",
-# then save its URL here as the repository secret CLOUDFLARE_DEPLOY_HOOK (Settings → Secrets and variables → Actions).
+# Setup (once): create a Cloudflare API token from the "Edit Cloudflare Workers" template and save it here as the
+# repository secret CLOUDFLARE_API_TOKEN (Settings → Secrets and variables → Actions). See README → Going live.
 name: Nightly publish
 
 on:
   schedule:
     - cron: '30 1 * * *'   # 9:30pm EDT / 8:30pm EST
     - cron: '30 2 * * *'   # 10:30pm EDT / 9:30pm EST (backup)
+  push:
+    branches: [main]
   workflow_dispatch:
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Ask Cloudflare Pages to rebuild zooku.app
+      - name: Check the API token is set
         env:
-          HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
-          if [ -z "$HOOK" ]; then
-            echo "::error::The CLOUDFLARE_DEPLOY_HOOK secret is not set, so tomorrow's puzzle was not released. See README → Going live."
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::The CLOUDFLARE_API_TOKEN secret is not set, so zooku.app was not updated. See README → Going live."
             exit 1
           fi
-          curl --fail --silent --show-error --retry 3 -X POST "$HOOK"
-          echo "Rebuild requested."
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - run: npm run build
+      # Upload, then switch traffic to that version: only the site files change, never the domain or Worker settings.
+      - name: Deploy zooku.app
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@4 versions upload | tee upload.log
+          version=$(grep -oE 'Worker Version ID: [0-9a-f-]{36}' upload.log | grep -oE '[0-9a-f-]{36}')
+          if [ -z "$version" ]; then echo "::error::wrangler did not report a version ID"; exit 1; fi
+          npx --yes wrangler@4 versions deploy "$version@100%" --yes
