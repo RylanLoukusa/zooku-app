@@ -669,6 +669,12 @@
     $('guideBtn').onclick = openGuide;
     $('roadBtn').onclick = () => openRoadmap();
     $('privBtn').onclick = openPrivacy;
+    // a click anywhere off the pieces dismisses the card (and the selection it belongs to)
+    document.addEventListener('click', e => {
+      if (suppressClick || !$('overlay').hidden || !(sel || hover)) return;
+      if (e.target.closest('[data-hand],[data-cell],[data-border],[data-fixed],#handTools')) return;
+      sel = null; if (!canHover()) hover = null; paint();
+    });
     $('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') closeSheet(); });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') { if (!$('overlay').hidden) closeSheet(); else if (sel || hover) { sel = null; hover = null; paint(); } }
