@@ -7,7 +7,7 @@ const path = require('path');
 const DIST = path.join(__dirname, '..', 'dist');
 const PORT = Number(process.env.PORT || 5173);
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml',
-  '.png': 'image/png', '.woff2': 'font/woff2', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.txt': 'text/plain; charset=utf-8' };
+  '.png': 'image/png', '.woff2': 'font/woff2', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml' };
 
 // a small reader for the _headers format: a path pattern line, then indented "Name: value" lines
 function headerRules() {
@@ -27,7 +27,8 @@ const matches = (pattern, url) => pattern.endsWith('*') ? url.startsWith(pattern
 http.createServer((req, res) => {
   const url = decodeURIComponent(req.url.split('?')[0]);
   let file = path.join(DIST, url === '/' ? 'index.html' : url);
-  if (!file.startsWith(DIST) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) file = path.join(DIST, 'index.html');
+  if (file.startsWith(DIST) && fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');   // /about/ → about/index.html, as Cloudflare does
+  if (!file.startsWith(DIST) || !fs.existsSync(file)) file = path.join(DIST, 'index.html');
   const headers = { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream' };
   RULES.filter(r => matches(r.pattern, url)).forEach(r => Object.assign(headers, r.headers));
   res.writeHead(200, headers);

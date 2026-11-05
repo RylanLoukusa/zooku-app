@@ -13,6 +13,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { etDate, etHour, addDays } = require('./lib/time');
 const calendar = require('./lib/calendar');
+const pages = require('./lib/pages');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = process.env.OUT_DIR ? path.resolve(process.env.OUT_DIR) : path.join(ROOT, 'dist');
@@ -35,6 +36,7 @@ const assets = {
   'engine.js': read('src/shared/engine.js'),
   'art.js': read('src/shared/art.js'),
   'app.js': read('src/game/app.js'),
+  'pages.css': read('src/pages/pages.css'),
 };
 const urls = {};
 for (const [name, content] of Object.entries(assets)) {
@@ -49,9 +51,13 @@ const html = read('src/game/index.html').replace(/\{\{([\w.]+)\}\}/g, (_, key) =
 });
 fs.writeFileSync(path.join(OUT, 'index.html'), html);
 
+// ---- reading pages (how to play, field guide, archive, about, contact, privacy) and sitemap.xml ----
+// The archive lists only days that are already playable, never tomorrow's.
+const pageUrls = pages.build({ ROOT, OUT, css: urls['pages.css'], past: released.filter(d => d.date <= today), today });
+
 // ---- report ----
 const last = released[released.length - 1];
-console.log(`Built ${path.relative(ROOT, OUT) || OUT}/ with ${released.length} days through ${through} (latest: #${last.no} ${last.title}).`);
+console.log(`Built ${path.relative(ROOT, OUT) || OUT}/ with ${released.length} days through ${through} (latest: #${last.no} ${last.title}) and ${pageUrls.length} pages.`);
 if (!all.some(d => d.date === today)) console.warn(`! No puzzle for today (${today}) in data/calendar.json. Run "npm run generate".`);
 const upcoming = all.filter(d => d.date > today && d.date <= addDays(today, 7));
 const unreviewed = upcoming.filter(d => !(d.review && d.review.approved));

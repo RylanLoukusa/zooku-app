@@ -14,11 +14,12 @@ src/
     generator.js   builds new daily puzzles (tools only, never shipped)
   game/          The website players see: index.html, styles.css, app.js
   workshop/      The private review page (runs on your computer only)
+  pages/         Styles for the reading pages (how to play, field guide, archive, about, privacy)
 data/
   calendar.json  Every day, past and upcoming, one per line: the puzzle, its answer and stats, and your approval
 public/          Copied into the site as-is: icons, share image, fonts, _headers, robots.txt, manifest
 scripts/
-  build.js       builds the website into dist/
+  build.js       builds the website into dist/ (lib/pages.js writes the reading pages, lib/content.js holds their text)
   workshop.js    runs the workshop at http://localhost:5174
   generate.js    adds days to the calendar
   runway.js      how far ahead the calendar is approved
@@ -80,7 +81,11 @@ Dashboard labels move around occasionally; the settings themselves stay the same
 
 ## Privacy
 
-There are no accounts, ads, cookies or analytics. Progress is saved only in the player's browser (`localStorage`). Fonts and icons are served from this site. The only third party is the feedback button, which opens a Google Form. `public/_headers` sets a strict content security policy so the page can only load its own files.
+There are no accounts. Progress is saved only in the player's browser (`localStorage`). Fonts and icons are served from this site. The site shows Google AdSense ads (which may set cookies), counts visits with Cloudflare Web Analytics (no cookies), and the feedback button opens a Google Form. The full policy is the [privacy page](https://zooku.app/privacy/) (`scripts/lib/pages.js`); update it and `PRIVACY_UPDATED` together. `public/_headers` sets a content security policy that allows only this site's files plus those services.
+
+## Reading pages
+
+Besides the game, the build writes plain HTML pages that read without JavaScript: `/how-to-play/`, `/field-guide/` (one page per scene, built from the animals in `engine.js` and the casts in `generator.js`), `/archive/` (every playable day, no answers), `/about/`, `/contact/` and `/privacy/`, plus `sitemap.xml`. The page code is `scripts/lib/pages.js`, the written text is `scripts/lib/content.js`, and the styles are `src/pages/pages.css`. A new theme needs an `ECOSYSTEMS` entry in `content.js` (the build fails without one).
 
 ## Credits
 
