@@ -35,7 +35,7 @@ test('the page links real files and absolute share URLs', () => {
 });
 
 // Reading pages: plain HTML that search engines and AdSense reviewers can read without running the game.
-const pageFiles = fs.readdirSync(OUT, { recursive: true }).filter(f => f.endsWith('index.html') && f !== 'index.html');
+const pageFiles = fs.readdirSync(OUT, { recursive: true }).filter(f => f.endsWith('index.html') && f !== 'index.html' && !f.startsWith('puzzle'));
 const textOf = h => h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<svg[\s\S]*?<\/svg>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 
 test('the reading pages are built, and the sitemap lists every page', () => {
@@ -73,4 +73,12 @@ test('the privacy policy covers ads and cookies', () => {
   assert.match(h, /AdSense/);
   assert.match(h, /adssettings\.google\.com/);
   assert.match(h, /cookies/);
+});
+
+test('every released day has its own address, and no later day does', () => {
+  const days = calendar.read();
+  const released = days.filter(d => d.date <= THROUGH);
+  for (const d of released) assert.equal(fs.readFileSync(path.join(OUT, 'puzzle', String(d.no), 'index.html'), 'utf8'), html, `/puzzle/${d.no}/`);
+  const later = days.find(d => d.date > THROUGH);
+  if (later) assert.ok(!fs.existsSync(path.join(OUT, 'puzzle', String(later.no))), `/puzzle/${later.no}/ is not released yet`);
 });

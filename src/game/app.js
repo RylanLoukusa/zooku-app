@@ -25,6 +25,19 @@
 
   let store = { seenHowTo: false, p: {} };
   let cur = PUZZLES.length - 1;     // today = last puzzle
+
+  // ---------- addresses: today is "/", an earlier day is "/puzzle/<no>/" (the build writes a page for each) ----------
+  const urlFor = i => (i === PUZZLES.length - 1 ? '/' : `/puzzle/${PUZZLES[i].no}/`);
+  function dayFromUrl() {
+    const m = location.pathname.match(/^\/puzzle\/(\d+)\/?$/);
+    const i = m ? PUZZLES.findIndex(p => p.no === Number(m[1])) : -1;
+    return i >= 0 ? i : PUZZLES.length - 1;   // unknown or not yet open: today
+  }
+  function syncUrl(push) {
+    const url = urlFor(cur);
+    if (location.pathname !== url) try { history[push ? 'pushState' : 'replaceState'](null, '', url + location.search); } catch (e) {}
+    document.title = cur === PUZZLES.length - 1 ? 'Zooku · Daily Animal Puzzle' : `Zooku #${P().no} · ${P().title}`;
+  }
   let sel = null;                   // picked up: {from:'hand', idx} | {from:'cell', cell}
   let hover = null;                 // under the mouse: {from:'hand'|'cell'|'border', ...}
   let drag = null;                  // tile being dragged: {from, idx|cell, el, x0, y0, started, over, ghost}
@@ -573,7 +586,7 @@
     if (st.survey && isLatest()) $('surveySub').textContent = ready ? 'A new puzzle is ready' : `Next puzzle in ${leftText(ms)}`;
     const el = $('nextUp');
     if (el) {
-      if (ready && !el.querySelector('button')) { el.innerHTML = '<button class="big-btn" id="playNew">Play the new puzzle</button>'; $('playNew').onclick = () => location.reload(); }
+      if (ready && !el.querySelector('button')) { el.innerHTML = '<button class="big-btn" id="playNew">Play the new puzzle</button>'; $('playNew').onclick = () => location.assign('/'); }
       else if (!ready) el.textContent = `Next puzzle in ${leftText(ms)}`;
     }
   }
@@ -614,6 +627,12 @@
     $('closeRoad').onclick = () => (back ? back() : closeSheet());
   }
 
+  function showDay(i, push) {
+    cur = i; sel = null; hover = null; lastScore = null;
+    syncUrl(push);
+    render();
+  }
+
   function openPast() {
     let h = '<h2 id="sheetTitle">Puzzles</h2><div class="past">';
     [...PUZZLES].reverse().forEach(p => {
@@ -624,7 +643,7 @@
     });
     h += '</div><div class="btn-row"><button class="big-btn plain" id="closePast">Close</button></div>';
     openSheet(h);
-    $('sheet').querySelectorAll('[data-pz]').forEach(b => b.onclick = () => { cur = Number(b.dataset.pz); sel = null; hover = null; lastScore = null; closeSheet(); render(); });
+    $('sheet').querySelectorAll('[data-pz]').forEach(b => b.onclick = () => { showDay(Number(b.dataset.pz), true); closeSheet(); });
     $('closePast').onclick = closeSheet;
   }
 
@@ -689,6 +708,9 @@
     }
     load();
     wire();
+    cur = dayFromUrl();
+    syncUrl(false);
+    window.addEventListener('popstate', () => { const i = dayFromUrl(); if (i !== cur) { if (!$('overlay').hidden) closeSheet(); showDay(i, false); } });
     render();
     if (!store.seenHowTo) openHowTo(0);
   }
