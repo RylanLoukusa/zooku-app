@@ -51,6 +51,7 @@ Needs Node 20 or newer. There is nothing to install.
 - Every evening, the **Nightly publish** workflow builds and deploys the site, so tomorrow's puzzle is online before midnight. The game keeps it hidden until midnight Eastern. Any push to `main` also deploys the site.
 - There are 16 themes, each with its own animals and habitat. The generator uses each theme at most twice per calendar month, about two weeks apart, so no animal or habitat shows up more than twice a month (`npm test` checks this).
 - Unapproved days still go out on their date, so the game never goes blank. Approval is your review step, and the reminder makes sure you get to it.
+- Each released day also has its own address, `/puzzle/<no>/` (the build writes a copy of the game page there). Today is plain `/`; picking an earlier day from the calendar changes the address, so a refresh or a shared link stays on that day.
 - Never change a day once it is live: players may already have played it. The workshop locks those days.
 
 ## Monthly routine

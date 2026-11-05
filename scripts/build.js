@@ -50,6 +50,12 @@ const html = read('src/game/index.html').replace(/\{\{([\w.]+)\}\}/g, (_, key) =
   return urls[key];
 });
 fs.writeFileSync(path.join(OUT, 'index.html'), html);
+// Each day also gets its own address, /puzzle/<no>/, so a refresh or a shared link stays on that day.
+// It is the same game page (its canonical stays "/"); the game reads the number from the address.
+for (const d of released) {
+  fs.mkdirSync(path.join(OUT, 'puzzle', String(d.no)), { recursive: true });
+  fs.writeFileSync(path.join(OUT, 'puzzle', String(d.no), 'index.html'), html);
+}
 
 // ---- reading pages (how to play, field guide, archive, about, contact, privacy) and sitemap.xml ----
 // The archive lists only days that are already playable, never tomorrow's.

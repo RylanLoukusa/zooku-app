@@ -236,7 +236,7 @@ ${predCard}
 ${preyCards}
 
 ${recent.length ? `<h2>Recent ${esc(eco.name)} puzzles</h2>
-<ul class="archive-mini">${recent.map(d => `<li><a href="/archive/#no-${d.no}">No. ${d.no}: ${esc(d.title)}</a> <span>${shortDate(d.date)}</span></li>`).join('')}</ul>` : ''}
+<ul class="archive-mini">${recent.map(d => `<li><a href="/puzzle/${d.no}/">No. ${d.no}: ${esc(d.title)}</a> <span>${shortDate(d.date)}</span></li>`).join('')}</ul>` : ''}
 
 <p class="cta"><a class="btn" href="/">Play today’s puzzle</a> <a class="btn plain" href="/how-to-play/">How to play</a></p>
 </article>`;
@@ -259,14 +259,14 @@ function archive(css, past) {
     const habitat = ZK.habitatOf(d);
     const cast = d.hand.map(t => ZK.ANIMALS[t.a].short);
     const uniq = [...new Set(cast)];
-    return `<li id="no-${d.no}"><div class="arc-head"><b>No. ${d.no}: ${esc(d.title)}</b><time datetime="${d.date}">${longDate(d.date)}</time></div>
+    return `<li id="no-${d.no}"><div class="arc-head"><b><a href="/puzzle/${d.no}/">No. ${d.no}: ${esc(d.title)}</a></b><time datetime="${d.date}">${longDate(d.date)}</time></div>
       <p>${eco ? `<a href="/field-guide/${slug(k)}/">${esc(eco.name)}</a> · ` : ''}${esc(d.groups.prey)} and ${esc(d.groups.pred)} · ${d.rocks.length} rock${d.rocks.length === 1 ? '' : 's'}${habitat ? ` · ${esc(ZK.HABITATS[habitat.h].name)} (${habitat.eff.t === 'mult' ? '×' + habitat.eff.v : '+' + habitat.eff.v})` : ''}</p>
       <p class="cast">${uniq.map(esc).join(', ')}</p></li>`;
   };
   const body = `
 <article class="prose-page">
 <h1>Puzzle archive</h1>
-<p class="lede">Every Zooku puzzle so far, newest first. To play one, open <a href="/">the game</a> and tap the calendar button at the top. Answers are never published here, so the archive is safe to browse before you play.</p>
+<p class="lede">Every Zooku puzzle so far, newest first. Tap a puzzle’s name to play it; each one has its own address, so you can bookmark or share it. Answers are never published here, so the archive is safe to browse before you play.</p>
 ${[...byMonth].map(([m, days]) => `<h2>${m}</h2>\n<ol class="archive" reversed>${days.map(row).join('\n')}</ol>`).join('\n')}
 </article>`;
   return page({ urlPath: '/archive/', title: 'Zooku Puzzle Archive · Every Daily Puzzle', css, body,
