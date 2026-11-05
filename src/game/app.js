@@ -583,9 +583,10 @@
   function openPrivacy() {
     openSheet(`<h2 id="sheetTitle">Privacy</h2>
       <div class="prose">
-        <p>Zooku has no accounts, no ads and no tracking.</p>
-        <p>Your progress (boards, best scores and surveys) is saved only in this browser, on this device. Nothing is sent to us, and clearing your browser data erases it.</p>
+        <p>Zooku has no accounts. Your progress (boards, best scores and surveys) is saved only in this browser, on this device. Nothing is sent to us, and clearing your browser data erases it.</p>
+        <p>Zooku is paid for by ads from Google AdSense, which may use cookies. You can turn off personalized ads at <a href="https://adssettings.google.com" target="_blank" rel="noopener">Google Ads Settings</a>.</p>
         <p>The “Vote &amp; suggest” button opens a Google Form. Anything you send there is collected by Google Forms under <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google’s privacy policy</a>.</p>
+        <p><a href="/privacy/">Read the full privacy policy</a></p>
       </div>
       <div class="btn-row"><button class="big-btn plain" id="closePriv">Close</button></div>`);
     $('closePriv').onclick = closeSheet;
