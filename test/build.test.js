@@ -82,3 +82,9 @@ test('every released day has its own address, and no later day does', () => {
   const later = days.find(d => d.date > THROUGH);
   if (later) assert.ok(!fs.existsSync(path.join(OUT, 'puzzle', String(later.no))), `/puzzle/${later.no}/ is not released yet`);
 });
+
+// Google Search Console checks this file to keep zooku.app verified (needed for AdSense). Never remove it.
+test('the Google site verification file ships unchanged at the site root', () => {
+  const name = 'googled1d0458de82730c6.html';
+  assert.equal(fs.readFileSync(path.join(OUT, name), 'utf8'), `google-site-verification: ${name}`);
+});
